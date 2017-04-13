@@ -47,7 +47,9 @@ class ActivityController: UITableViewController {
     }
     
     func refresh() {
-        fetchEvents(repo: repo)
+        DispatchQueue.global(qos: .background).async {
+            self.fetchEvents(repo: self.repo)
+        }
     }
     
     func processEvents(_ newEvents: [Event]) {
@@ -55,24 +57,41 @@ class ActivityController: UITableViewController {
         if updatedEvents.count > 50 {
             updatedEvents = Array<Event>(updatedEvents.prefix(upTo: 50))
         }
+        print("main: \(Thread.isMainThread)")
         events.value = updatedEvents
-        tableView.reloadData()
-        refreshControl?.endRefreshing()
-        let eventsArray = updatedEvents.map { $0.dictionary } as NSArray
-        eventsArray.write(to: eventsFileURL, atomically: true)
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.refreshControl?.endRefreshing()
+            let eventsArray = updatedEvents.map { $0.dictionary } as NSArray
+            eventsArray.write(to: self.eventsFileURL, atomically: true)
+        }
     }
     
-    
-    
     func fetchEvents(repo: String) {
-        let response = Observable.from([repo])
+        //let response = Observable.from([repo])
+        let response = Observable.from(["https://api.github.com/search/repositories?q=language:swift&per_page=5"])
+            .map { urlString -> URL in
+                return URL(string: urlString)!
+            }
+            .flatMap { url -> Observable<Any> in
+                let request = URLRequest(url: url)
+                return URLSession.shared.rx.json(request: request)
+            }
+            .flatMap { response -> Observable<String> in
+                guard let response = response as? [String: Any],
+                    let items = response["items"] as? [[String: Any]] else {
+                        return Observable.never()
+                }
+                return Observable.from(items.map { $0["full_name"] as! String })
+            }
             .map { urlString -> URL in
                 return URL(string: "https://api.github.com/repos/\(urlString)/events")!
             }
             .map { [weak self] url -> URLRequest in
                 var request = URLRequest(url: url)
                 if let modifiedHeader = self?.lastModified.value {
-                    request.addValue(modifiedHeader as String, forHTTPHeaderField: "Last-Modified")
+                    request.addValue(modifiedHeader as String,
+                                     forHTTPHeaderField: "Last-Modified")
                 }
                 return request
             }
@@ -80,13 +99,15 @@ class ActivityController: UITableViewController {
                 return URLSession.shared.rx.response(request: request)
             }
             .shareReplay(1)
+        
         response
             .filter { response, _ in
                 return 200..<300 ~= response.statusCode
             }
             .map { _, data -> [[String: Any]] in
-                guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []), let result = jsonObject as? [[String: Any]] else {
-                    return []
+                guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+                    let result = jsonObject as? [[String: Any]] else {
+                        return []
                 }
                 return result
             }
@@ -100,22 +121,22 @@ class ActivityController: UITableViewController {
                 self?.processEvents(newEvents)
             })
             .addDisposableTo(bag)
+        
         response
             .filter {response, _ in
                 return 200..<400 ~= response.statusCode
             }
             .flatMap { response, _ -> Observable<NSString> in
-                guard let value = response.allHeaderFields["Last-Modified"]  as?
-                    NSString else {
-                        return Observable.never()
+                guard let value = response.allHeaderFields["Last-Modified"]  as? NSString else {
+                    return Observable.never()
                 }
                 return Observable.just(value)
             }
             .subscribe(onNext: { [weak self] modifiedHeader in
                 guard let strongSelf = self else { return }
                 strongSelf.lastModified.value = modifiedHeader
-                try? modifiedHeader.write(to: strongSelf.modifiedFileURL, atomically:
-                    true, encoding: String.Encoding.utf8.rawValue)
+                try? modifiedHeader.write(to: strongSelf.modifiedFileURL, atomically: true,
+                                          encoding: String.Encoding.utf8.rawValue)
             })
             .addDisposableTo(bag)
     }
