@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		03229C2947146DA3EF718A5C /* Pods_RxGitFeed.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57EB728A1338ADCB3ADD5FE3 /* Pods_RxGitFeed.framework */; };
 		39BA651447484F5C61101AD8 /* Pods_RxGitFeedTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AABF596D24965A151E51461 /* Pods_RxGitFeedTests.framework */; };
+		4925129E1E9FC293007AF61F /* events.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4925129D1E9FC293007AF61F /* events.plist */; };
 		49C61FB31E9F8F6F00E9411D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C61FB21E9F8F6F00E9411D /* AppDelegate.swift */; };
 		49C61FB51E9F8F6F00E9411D /* ActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C61FB41E9F8F6F00E9411D /* ActivityController.swift */; };
 		49C61FB81E9F8F6F00E9411D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 49C61FB61E9F8F6F00E9411D /* Main.storyboard */; };
@@ -32,6 +33,7 @@
 		2941CE04456AF00FB2CDFAC3 /* Pods-RxGitFeedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxGitFeedTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxGitFeedTests/Pods-RxGitFeedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2C07ABBECEEE6B3E485AD644 /* Pods-RxGitFeedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxGitFeedTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxGitFeedTests/Pods-RxGitFeedTests.release.xcconfig"; sourceTree = "<group>"; };
 		3A9B689866C5AA2F8232CBF7 /* Pods-RxGitFeed.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxGitFeed.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxGitFeed/Pods-RxGitFeed.release.xcconfig"; sourceTree = "<group>"; };
+		4925129D1E9FC293007AF61F /* events.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = events.plist; sourceTree = "<group>"; };
 		49C61FAF1E9F8F6F00E9411D /* RxGitFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxGitFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49C61FB21E9F8F6F00E9411D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		49C61FB41E9F8F6F00E9411D /* ActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityController.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				49C61FB91E9F8F6F00E9411D /* Assets.xcassets */,
 				49C61FBB1E9F8F6F00E9411D /* LaunchScreen.storyboard */,
 				49C61FBE1E9F8F6F00E9411D /* Info.plist */,
+				4925129D1E9FC293007AF61F /* events.plist */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				49C61FBD1E9F8F6F00E9411D /* LaunchScreen.storyboard in Resources */,
 				49C61FBA1E9F8F6F00E9411D /* Assets.xcassets in Resources */,
 				49C61FB81E9F8F6F00E9411D /* Main.storyboard in Resources */,
+				4925129E1E9FC293007AF61F /* events.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
