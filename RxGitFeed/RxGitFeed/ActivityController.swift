@@ -38,6 +38,16 @@ class ActivityController: UITableViewController {
         fetchEvents(repo: repo)
     }
     
+    func processEvents(_ newEvents: [Event]) {
+        var updatedEvents = newEvents + events.value
+        if updatedEvents.count > 50 {
+            updatedEvents = Array<Event>(updatedEvents.prefix(upTo: 50))
+        }
+        events.value = updatedEvents
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
+    }
+    
     func fetchEvents(repo: String) {
         let response = Observable.from([repo])
             .map { urlString -> URL in
@@ -65,9 +75,12 @@ class ActivityController: UITableViewController {
                 return objects.count > 0
             }
             .map { objects in
-                return objects.map(Event.init)
+                return objects.flatMap(Event.init)
         }
-        
+        .subscribe(onNext: { [weak self] newEvents in
+            self?.processEvents(newEvents)
+        })
+        .addDisposableTo(bag)
     }
     
     // MARK: - Table Data Source
