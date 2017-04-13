@@ -15,6 +15,7 @@ class ActivityController: UITableViewController {
     
     let repo = "ReactiveX/RxSwift"
     
+    
     fileprivate let events = Variable<[Event]>([])
     fileprivate let bag = DisposeBag()
     
@@ -38,6 +39,34 @@ class ActivityController: UITableViewController {
     }
     
     func fetchEvents(repo: String) {
+        let response = Observable.from([repo])
+            .map { urlString -> URL in
+                return URL(string: "https://api.github.com/repos/\(urlString)/events")!
+            }
+            .map { url -> URLRequest in
+                return URLRequest(url: url)
+            }
+            
+            .flatMap { request -> Observable<(HTTPURLResponse, Data)> in
+                return URLSession.shared.rx.response(request: request)
+            }
+            .shareReplay(1)
+        response
+            .filter { response, _ in
+                return 200..<300 ~= response.statusCode
+            }
+            .map { _, data -> [[String: Any]] in
+                guard let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []), let result = jsonObject as? [[String: Any]] else {
+                    return []
+                }
+                return result
+            }
+            .filter { objects in
+                return objects.count > 0
+            }
+            .map { objects in
+                return objects.map(Event.init)
+        }
         
     }
     

@@ -104,8 +104,8 @@
 			children = (
 				49C61FB21E9F8F6F00E9411D /* AppDelegate.swift */,
 				49C61FB41E9F8F6F00E9411D /* ActivityController.swift */,
-				49C61FD21E9F907D00E9411D /* Assets */,
 				49C61FD31E9F910100E9411D /* Event.swift */,
+				49C61FD21E9F907D00E9411D /* Assets */,
 			);
 			path = RxGitFeed;
 			sourceTree = "<group>";
